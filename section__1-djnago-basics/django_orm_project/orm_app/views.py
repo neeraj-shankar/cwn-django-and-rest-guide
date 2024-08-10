@@ -88,7 +88,48 @@ Certainly! Here are some interview questions based on Django ORM that are suitab
 These questions cover a range of topics and difficulty levels, providing a comprehensive assessment of a candidate's knowledge and experience
 
 """
-
+from rest_framework.response import Response
+from rest_framework.views import APIView
 from django.shortcuts import render
+from rest_framework import status
+from .models import Author, Book
+import logging
+from django.db.models.aggregates import Avg, Count
+# Define a logging format that includes the date, time, level, function name, and the log message
+LOG_FORMAT = "%(asctime)s - %(levelname)s - [%(funcName)s] - %(message)s"
+
+# Configure logging with the specified format and the date format
+logging.basicConfig(level=logging.INFO, format=LOG_FORMAT, datefmt="%Y-%m-%d %H:%M:%S")
+
+# Get a logger instance with the specified name
+logger = logging.getLogger(__name__)
+
+
 
 # Create your views here.
+class PracticeQueriesView(APIView):
+
+    def get(self, request, format=None): 
+
+        # Getting all books using a given author
+        author = Author.objects.get(name="J.K. Rowling") 
+        # Listing all books written a by a given author
+        all_books = author.book_set.all()
+
+        logger.info(f"Showing titel of the all retrieved books: ")
+        for book in all_books:
+            logger.info(f"{book.title}")
+
+        # Annotate each author with the number of books they have written
+        authors = Author.objects.annotate(book_count=Count('book'))
+        logger.info(f"Author query set after annotation: {authors}")
+
+        # Annotate each author with count and convert in dictionary
+        authors = Author.objects.annotate(book_count=Count('book')).values()
+        logger.info(f"Annotated author Queries after conversion to dictionary: {authors}")
+
+        # for a in author:
+        #     logging.info(f"Author name: {a.name}")
+
+        SUCCESS_MESSAGE = {"message": "Connection to api is established"}
+        return Response(SUCCESS_MESSAGE, status=status.HTTP_200_OK)
