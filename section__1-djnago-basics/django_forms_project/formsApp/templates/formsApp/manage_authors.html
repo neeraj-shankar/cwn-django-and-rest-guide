@@ -1,0 +1,16 @@
+<!-- manage_authors.html -->
+<form method="post">
+    {% csrf_token %}
+    {{ formset.management_form }}
+    <table>
+        {% for form in formset %}
+        <tr>
+            <td>{{ form.name.label_tag }}</td>
+            <td>{{ form.name }}</td>
+            <td>{{ form.email.label_tag }}</td>
+            <td>{{ form.email }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    <button type="submit">Save</button>
+</form>
