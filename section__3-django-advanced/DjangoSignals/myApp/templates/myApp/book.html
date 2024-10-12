@@ -1,0 +1,23 @@
+<h1>Boos Saving form</h1>
+<hr><hr>
+
+
+<form method="post">
+    {% csrf_token %}
+    {% for field in form %}
+    <div>
+        {{ field.label_tag }}
+        <br> 
+        {{ field }}
+        {% if field.errors %}
+            <ul class="errorlist">
+                {% for error in field.errors %}
+                    <li>{{ error }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    </div>
+   {% endfor %}
+   <button type="submit">Submit</button>
+
+</form>
